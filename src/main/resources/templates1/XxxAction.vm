@@ -1,0 +1,282 @@
+package ${rootPackage}${module}.web;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import net.sf.json.JSONObject;
+
+import com.cattsoft.baseplatform.core.entity.PagingInfo;
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+#if(${convert}=="yes")
+import com.cattsoft.baseplatform.core.util.IdConverter;
+import com.cattsoft.baseplatform.core.util.IdConvertionBean;
+import com.cattsoft.baseplatform.core.util.IdDomainBean;
+#end
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+import ${rootPackage}${module}.service.${upperTableName}Service;
+import com.cattsoft.baseplatform.web.action.CrudAction;
+
+public class ${upperTableName}Action extends CrudAction<${upperTableName}> {
+	private static final long serialVersionUID = 1L;
+	private static final Log LOG = LogFactory.getLog(${upperTableName}Action.class);
+	/** 服务Service */
+	private ${upperTableName}Service ${lowerTableName}Service;
+    /** 值对象POJO */
+	private ${upperTableName} ${lowerTableName};
+	/** 值对象查询Bean */
+	private ${upperTableName}QB ${lowerTableName}QB;
+	/** 分页查询Bean */
+	private PagingQueryBean<${upperTableName}QB> pqb;
+#if(${convert}=="no")
+	/** 分页查询结果集合 */
+	private PagingResultBean<List<${upperTableName}>> prb;
+#end
+#if(${convert}=="yes")
+	/** 分页查询结果集合 */
+	private PagingResultBean<List<${upperTableName}>> pagingResultBean;
+	/** id转换工具 */
+	private IdConverter<${upperTableName}> idConverter;
+	/** 转换后的结果集合 */
+	private PagingResultBean<List<IdConvertionBean<${upperTableName}>>> prb;
+#end
+	/** 结果信息 */
+	JSONObject resultMsg = new JSONObject();
+
+	public JSONObject getResultMsg() {
+		return resultMsg;
+	}
+
+	public void setResultMsg(JSONObject resultMsg) {
+		this.resultMsg = resultMsg;
+	}
+
+	public ${upperTableName}Action() {
+		pqb = new PagingQueryBean<${upperTableName}QB>();
+		${lowerTableName}QB = new ${upperTableName}QB();
+		pqb.setQueryBean(${lowerTableName}QB);
+		PagingInfo pagingInfo = new PagingInfo();
+		pqb.setPagingInfo(pagingInfo);
+#if(${convert}=="yes")
+		prb = new PagingResultBean<List<IdConvertionBean<${upperTableName}>>>();
+#end
+	}
+	/**
+	 * 显示主页面
+	 */
+	public String main() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示${upperTableName}主页面");
+		}
+		return "main";
+	}
+	/**
+	 * 显示列表页面
+	 */
+	public String showList() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示${upperTableName}列表页面");
+		}
+		return "showList";
+	}
+#if(${convert}=="no")
+	/**
+	 * 分页查询列表操作
+	 */
+	@Override
+	public String list() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("查询${upperTableName}列表");
+		}
+		prb = ${lowerTableName}Service.queryPageList(pqb);
+		return "list";
+	}
+#end
+#if(${convert}=="yes")
+	/**
+	 * 分页查询列表操作
+	 */
+	@Override
+	public String list() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("查询列表");
+		}
+		pagingResultBean = ${lowerTableName}Service.queryPageList(pqb);
+		convert(pagingResultBean);
+		return "list";
+	}
+	/**
+	 * 常量转换操作
+	 */
+	private void convert(PagingResultBean<List<${upperTableName}>> pagingResultBean) {
+		// TODO
+		List<IdDomainBean> converFields = new ArrayList<IdDomainBean>();
+		//IdDomainBean idDomain = new IdDomainBean();
+		//idDomain.setDomainCode("");
+		//idDomain.setIdCode("");
+		List<IdConvertionBean<${upperTableName}>> resultList = idConverter.convert(pagingResultBean.getResultList(), converFields);
+		prb = new PagingResultBean<List<IdConvertionBean<${upperTableName}>>>();
+		prb.setResultList(resultList);
+		prb.setPagingInfo(pagingResultBean.getPagingInfo());
+	}
+#end
+	/**
+	 * 显示新增界面
+	 */
+	@Override
+	public String prepareCreate() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示${upperTableName}新增页面");
+		}
+		return "prepareCreate";
+	}
+	/**
+	 * 新增操作
+	 */
+	@Override
+	public String create() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("新增${upperTableName}数据");
+		}
+		result = ${lowerTableName}Service.insertSelective(${lowerTableName});
+		if (result > 0) {
+			resultMsg.put("result", "true");
+			resultMsg.put("msg", "新增操作成功！");
+		} else {
+			resultMsg.put("result", "true");
+			resultMsg.put("msg", "新增操作失败！");
+		}
+		return DEFAULT;
+	}
+	/**
+	 * 显示修改界面
+	 */
+	public String prepareUpdate() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示${upperTableName}修改页面");
+		}
+		${lowerTableName} = ${lowerTableName}Service.selectByPrimaryKey(${lowerTableName});
+		return "prepareUpdate";
+	}
+	/**
+	 * 修改操作
+	 */
+	@Override
+	public String update() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("修改${upperTableName}信息");
+		}
+		result = ${lowerTableName}Service.updateByPrimaryKeySelective(${lowerTableName});
+		if (result >= 0) {
+			resultMsg.put("result", "true");
+			resultMsg.put("msg", "新增操作成功！");
+		} else {
+			resultMsg.put("result", "true");
+			resultMsg.put("msg", "新增操作失败！");
+		}
+		return DEFAULT;
+	}
+	/**
+	 * 删除操作（逻辑删除）
+	 */
+	@Override
+	public String delete() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("删除${upperTableName}操作（逻辑删除）");
+		}
+		result = ${lowerTableName}Service.deleteByPrimaryKey(${lowerTableName});
+		if (result >= 0) {
+			resultMsg.put("result", "true");
+			resultMsg.put("msg", "删除操作成功！");
+		} else {
+			resultMsg.put("result", "true");
+			resultMsg.put("msg", "删除操作失败！");
+		}
+		return DEFAULT;
+	}
+
+	/**
+	 * 查看操作
+	 */
+	@Override
+	public String view() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示${upperTableName}明细页面");
+		}
+		${lowerTableName} = ${lowerTableName}Service.selectByPrimaryKey(${lowerTableName});
+		return VIEW;
+	}
+	
+	////////////////////// getter and setter ////////////////////
+	@Override
+	public ${upperTableName} getModel() {
+		return ${lowerTableName};
+	}
+	
+	public void set${upperTableName}Service(${upperTableName}Service ${lowerTableName}Service) {
+		this.${lowerTableName}Service = ${lowerTableName}Service;
+	}
+	
+	public ${upperTableName} get${upperTableName}() {
+		return ${lowerTableName};
+	}
+	
+	public void set${upperTableName}(${upperTableName} ${lowerTableName}) {
+		this.${lowerTableName} = ${lowerTableName};
+	}
+	
+	public ${upperTableName}QB get${upperTableName}QB() {
+		return ${lowerTableName}QB;
+	}
+
+	public void set${upperTableName}QB(${upperTableName}QB ${lowerTableName}QB) {
+		this.${lowerTableName}QB = ${lowerTableName}QB;
+	}
+	
+	public PagingQueryBean<${upperTableName}QB> getPqb() {
+		return pqb;
+	}
+
+	public void setPqb(PagingQueryBean<${upperTableName}QB> pqb) {
+		this.pqb = pqb;
+	}
+	
+#if(${convert}=="no")
+	public PagingResultBean<List<${upperTableName}>> getPrb() {
+		return prb;
+	}
+
+	public void setPrb(PagingResultBean<List<${upperTableName}>> prb) {
+		this.prb = prb;
+	}
+#end
+#if(${convert}=="yes")
+	public PagingResultBean<List<${upperTableName}>> getPagingResultBean() {
+		return pagingResultBean;
+	}
+
+	public void setPagingResultBean(PagingResultBean<List<${upperTableName}>> pagingResultBean) {
+		this.pagingResultBean = pagingResultBean;
+	}
+
+	public IdConverter<${upperTableName}> getIdConverter() {
+		return idConverter;
+	}
+
+	public void setIdConverter(IdConverter<${upperTableName}> idConverter) {
+		this.idConverter = idConverter;
+	}
+
+	public PagingResultBean<List<IdConvertionBean<${upperTableName}>>> getPrb() {
+		return prb;
+	}
+
+	public void setPrb(PagingResultBean<List<IdConvertionBean<${upperTableName}>>> prb) {
+		this.prb = prb;
+	}
+#end	
+}

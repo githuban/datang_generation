@@ -1,0 +1,62 @@
+package ${rootPackage}${module}.component;
+
+import java.util.List;
+
+import com.cattsoft.baseplatform.core.entity.PagingInfo;
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+import ${rootPackage}${module}.persistence.${upperTableName}Mapper;
+
+public class ${upperTableName}Component {
+
+	private ${upperTableName}Mapper ${lowerTableName}Mapper;
+
+	public void set${upperTableName}Mapper(${upperTableName}Mapper ${lowerTableName}Mapper) {
+		this.${lowerTableName}Mapper = ${lowerTableName}Mapper;
+	}
+
+	public PagingResultBean<List<${upperTableName}>> queryPageList(PagingQueryBean<${upperTableName}QB> pagingQueryBean) throws Exception {
+		PagingResultBean<List<${upperTableName}>> pagingResultBean = new PagingResultBean<List<${upperTableName}>>();
+		List<${upperTableName}> list = ${lowerTableName}Mapper.selectPage(pagingQueryBean);
+		pagingResultBean.setResultList(list);
+		PagingInfo pagingInfo = pagingQueryBean.getPagingInfo();
+		int count = ${lowerTableName}Mapper.selectPageCount(pagingQueryBean);
+		pagingInfo.setTotalRows(count);
+		pagingResultBean.setPagingInfo(pagingInfo);
+		return pagingResultBean;
+	}
+
+#if(${hasPrimaryKey})
+	public int deleteByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.deleteByPrimaryKey(#foreach(${primaryKey}in${primaryKeys})#if($foreach.count==1)${lowerTableName}.get${primaryKey}()#else, ${lowerTableName}.get${primaryKey}()#end#end);
+	}
+
+#end
+	public int insert(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.insert(${lowerTableName});
+	}
+
+	public int insertSelective(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.insertSelective(${lowerTableName});
+	}
+
+#if(${hasPrimaryKey})
+	public ${upperTableName} selectByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.selectByPrimaryKey(#foreach(${primaryKey}in${primaryKeys})#if($foreach.count==1)${lowerTableName}.get${primaryKey}()#else, ${lowerTableName}.get${primaryKey}()#end#end);
+	}
+
+#end
+#if(${hasPrimaryKey})
+	public int updateByPrimaryKeySelective(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.updateByPrimaryKeySelective(${lowerTableName});
+	}
+
+#end
+#if(${hasPrimaryKey})
+	public int updateByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Mapper.updateByPrimaryKey(${lowerTableName});
+	}
+#end
+}

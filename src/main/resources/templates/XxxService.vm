@@ -1,0 +1,32 @@
+package ${rootPackage}${module}.service;
+
+import java.util.List;
+
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+
+public interface ${upperTableName}Service {
+	PagingResultBean<List<${upperTableName}>> queryPageList(PagingQueryBean<${upperTableName}QB> pagingQueryBean) throws Exception ;
+
+#if(${hasPrimaryKey})
+	int deleteByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#end
+	int insert(${upperTableName} ${lowerTableName}) throws Exception ;
+
+	int insertSelective(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#if(${hasPrimaryKey})
+	${upperTableName} selectByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#end
+#if(${hasPrimaryKey})
+	int updateByPrimaryKeySelective(${upperTableName} ${lowerTableName}) throws Exception ;
+
+#end
+#if(${hasPrimaryKey})
+	int updateByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception ;
+#end
+}

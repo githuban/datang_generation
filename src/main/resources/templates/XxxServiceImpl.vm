@@ -1,0 +1,69 @@
+package ${rootPackage}${module}.service;
+
+import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+import ${rootPackage}${module}.component.${upperTableName}Component;
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+
+public class ${upperTableName}ServiceImpl implements ${upperTableName}Service {
+	private ${upperTableName}Component ${lowerTableName}Component;
+
+	public void set${upperTableName}Component(${upperTableName}Component ${lowerTableName}Component) {
+		this.${lowerTableName}Component = ${lowerTableName}Component;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public PagingResultBean<List<${upperTableName}>> queryPageList(PagingQueryBean<${upperTableName}QB> pagingQueryBean) throws Exception {
+		return ${lowerTableName}Component.queryPageList(pagingQueryBean);
+	}
+
+#if(${hasPrimaryKey})
+	@Override
+	@Transactional
+	public int deleteByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Component.deleteByPrimaryKey(${lowerTableName});
+	}
+
+#end
+	@Override
+	@Transactional
+	public int insert(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Component.insert(${lowerTableName});
+	}
+
+	@Override
+	@Transactional
+	public int insertSelective(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Component.insertSelective(${lowerTableName});
+	}
+
+#if(${hasPrimaryKey})
+	@Override
+	@Transactional(readOnly = true)
+	public ${upperTableName} selectByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Component.selectByPrimaryKey(${lowerTableName});
+	}
+
+#end
+#if(${hasPrimaryKey})
+	@Override
+	@Transactional
+	public int updateByPrimaryKeySelective(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Component.updateByPrimaryKeySelective(${lowerTableName});
+	}
+
+#end
+#if(${hasPrimaryKey})
+	@Override
+	@Transactional
+	public int updateByPrimaryKey(${upperTableName} ${lowerTableName}) throws Exception {
+		return ${lowerTableName}Component.updateByPrimaryKey(${lowerTableName});
+	}
+#end
+}

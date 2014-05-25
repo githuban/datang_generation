@@ -1,0 +1,217 @@
+package ${rootPackage}${module}.web;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.cattsoft.baseplatform.core.entity.PagingInfo;
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+#if(${convert}=="yes")
+import com.cattsoft.baseplatform.func.pub.web.IdConverter;
+import com.cattsoft.baseplatform.func.pub.web.IdConvertionBean;
+import com.cattsoft.baseplatform.func.pub.web.IdDomainBean;
+#end
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+import ${rootPackage}${module}.service.${upperTableName}Service;
+import com.cattsoft.baseplatform.web.action.Action;
+
+public class ${upperTableName}Action extends Action {
+	private static final long serialVersionUID = 1L;
+	private static final Log LOG = LogFactory.getLog(${upperTableName}Action.class);
+	private ${upperTableName}Service ${lowerTableName}Service;
+
+	public void set${upperTableName}Service(${upperTableName}Service ${lowerTableName}Service) {
+		this.${lowerTableName}Service = ${lowerTableName}Service;
+	}
+
+	private ${upperTableName} ${lowerTableName};
+
+	public ${upperTableName} get${upperTableName}() {
+		return ${lowerTableName};
+	}
+
+	public void set${upperTableName}(${upperTableName} ${lowerTableName}) {
+		this.${lowerTableName} = ${lowerTableName};
+	}
+
+	private ${upperTableName}QB ${lowerTableName}QB;
+
+	public ${upperTableName}QB get${upperTableName}QB() {
+		return ${lowerTableName}QB;
+	}
+
+	public void set${upperTableName}QB(${upperTableName}QB ${lowerTableName}QB) {
+		this.${lowerTableName}QB = ${lowerTableName}QB;
+	}
+
+	private PagingQueryBean<${upperTableName}QB> pqb;
+
+	public PagingQueryBean<${upperTableName}QB> getPqb() {
+		return pqb;
+	}
+
+	public void setPqb(PagingQueryBean<${upperTableName}QB> pqb) {
+		this.pqb = pqb;
+	}
+
+#if(${convert}=="no")
+	private PagingResultBean<List<${upperTableName}>> prb;
+
+	public PagingResultBean<List<${upperTableName}>> getPrb() {
+		return prb;
+	}
+
+	public void setPrb(PagingResultBean<List<${upperTableName}>> prb) {
+		this.prb = prb;
+	}
+
+#end
+#if(${convert}=="yes")
+	private PagingResultBean<List<${upperTableName}>> pagingResultBean;
+
+	public PagingResultBean<List<${upperTableName}>> getPagingResultBean() {
+		return pagingResultBean;
+	}
+
+	public void setPagingResultBean(PagingResultBean<List<${upperTableName}>> pagingResultBean) {
+		this.pagingResultBean = pagingResultBean;
+	}
+
+	private IdConverter<${upperTableName}> idConverter;
+
+	public IdConverter<${upperTableName}> getIdConverter() {
+		return idConverter;
+	}
+
+	public void setIdConverter(IdConverter<${upperTableName}> idConverter) {
+		this.idConverter = idConverter;
+	}
+
+	private PagingResultBean<List<IdConvertionBean<${upperTableName}>>> prb;
+
+	public PagingResultBean<List<IdConvertionBean<${upperTableName}>>> getPrb() {
+		return prb;
+	}
+
+	public void setPrb(PagingResultBean<List<IdConvertionBean<${upperTableName}>>> prb) {
+		this.prb = prb;
+	}
+
+#end
+	int result;
+
+	public int getResult() {
+		return result;
+	}
+
+	public void setResult(int result) {
+		this.result = result;
+	}
+
+	public ${upperTableName}Action() {
+		pqb = new PagingQueryBean<${upperTableName}QB>();
+		${lowerTableName}QB = new ${upperTableName}QB();
+		pqb.setQueryBean(${lowerTableName}QB);
+		PagingInfo pagingInfo = new PagingInfo();
+		pqb.setPagingInfo(pagingInfo);
+	}
+
+	public String showMain() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示主页面");
+		}
+		return "main";
+	}
+
+	public String showList() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示列表页面");
+		}
+		return "list";
+	}
+
+#if(${convert}=="no")
+	public String queryPageList() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("查询");
+		}
+		prb = ${lowerTableName}Service.queryPageList(pqb);
+		return "queryPageList";
+	}
+
+#end
+#if(${convert}=="yes")
+	public String queryPageList() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("查询");
+		}
+		pagingResultBean = ${lowerTableName}Service.queryPageList(pqb);
+		convert(pagingResultBean);
+		return "queryPageList";
+	}
+
+	private void convert(PagingResultBean<List<${upperTableName}>> pagingResultBean) {
+		// TODO
+		// IdDomainBean idDomainBean = new IdDomainBean();
+		// idDomainBean.setDomainCode("");
+		// idDomainBean.setIdCode("");
+		List<IdDomainBean> fieldList = new ArrayList<IdDomainBean>();
+		// fieldList.add(idDomainBean);
+		List<IdConvertionBean<${upperTableName}>> resultList = idConverter.convert(pagingResultBean.getResultList(), fieldList);
+		prb = new PagingResultBean<List<IdConvertionBean<${upperTableName}>>>();
+		prb.setResultList(resultList);
+		prb.setPagingInfo(pagingResultBean.getPagingInfo());
+	}
+
+#end
+	public String prepareCreate() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示增加页面");
+		}
+		return "create";
+	}
+
+	public String create() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("增加");
+		}
+		result = ${lowerTableName}Service.insertSelective(${lowerTableName});
+		return "result";
+	}
+
+	public String prepareUpdate() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示修改页面");
+		}
+		${lowerTableName} = ${lowerTableName}Service.selectByPrimaryKey(${lowerTableName});
+		return "update";
+	}
+
+	public String update() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("修改");
+		}
+		result = ${lowerTableName}Service.updateByPrimaryKeySelective(${lowerTableName});
+		return "result";
+	}
+
+	public String delete() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("删除");
+		}
+		result = ${lowerTableName}Service.deleteByPrimaryKey(${lowerTableName});
+		return "result";
+	}
+
+	public String showDetail() throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("显示明细页面");
+		}
+		${lowerTableName} = ${lowerTableName}Service.selectByPrimaryKey(${lowerTableName});
+		return "detail";
+	}
+}

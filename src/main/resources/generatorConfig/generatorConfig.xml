@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<context id="dev" targetRuntime="MyBatis3">
+<!-- 		<commentGenerator>   -->
+		    <!-- 是否去除自动生成的注释 true：是 ： false:否 -->  
+<!-- 		    <property name="suppressAllComments" value="true" />   -->
+<!-- 	 	 </commentGenerator>   -->
+		<!-- 基于oracle的分页插件 -->
+		<plugin type="org.mybatis.generator.plugins.PagingByOraclePlugin"></plugin>
+		<!-- JDBC -->
+		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+			connectionURL="jdbc:oracle:thin:@192.168.1.109:1521:ORCL123" 
+			userId="fuyou"
+			password="fuyou" />
+		 <!--  默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer   
+         true，把JDBC DECIMAL 和 NUMERIC 类型解析为java.math.BigDecimal   
+    	 -->   
+		  <javaTypeResolver >  
+		     <property name="forceBigDecimals" value="false" />  
+		  </javaTypeResolver>  
+		<!-- Xxx.java -->
+		<javaModelGenerator targetPackage="com.cattsoft.zhongzhi.school.entity"
+			targetProject="D:\\Workspaces\\myEclipse10\\generation\\src\\main\\java">
+			<property name="rootClass"
+				value="com.cattsoft.baseplatform.core.entity.Entity" />
+		</javaModelGenerator>
+		<!-- XxxMapper.xml -->
+		<sqlMapGenerator targetPackage="com.cattsoft.zhongzhi.school.persistence"
+			targetProject="D:\\Workspaces\\myEclipse10\\generation\\src\\main\\resources" />
+		<!-- XxxMapper.java -->
+		<javaClientGenerator targetPackage="com.cattsoft.zhongzhi.school.persistence"
+			targetProject="D:\\Workspaces\\myEclipse10\\generation\\src\\main\\java"
+			type="XMLMAPPER" />
+    
+		<!-- 同时生成多张表的，配置多个table节点 -->
+		<table schema="coc_dev" tableName="FY_SALE_ORDER"
+			enableCountByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" enableUpdateByExample="false">
+			<!-- sequence -->
+			<generatedKey column="SALE_ORDER_ID"
+				sqlStatement="select SEQ_FY_SALE_ORDER_ID.NEXTVAL from DUAL" />
+		</table>
+	</context>
+</generatorConfiguration>
