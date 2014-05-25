@@ -24,6 +24,10 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.JDBCConnectionConfiguration;
+import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
@@ -35,7 +39,7 @@ import org.mybatis.generator.logging.LogFactory;
  * Description: 根据表生成代码<br>
  * Copyright:DATANG SOFTWARE CO.LTD<br>
  * 
- * @author yuchunfang
+ * @author zhoulei
  * 
  */
 public class GenerateCode {
@@ -89,7 +93,10 @@ public class GenerateCode {
 			logger.debug("==========开始生成==========");
 		}
 		// 获取配置文件
-		Properties properties = getProperties();
+		//TODO 更换配置文件properties文件
+		Properties properties = getProperties("config.properties");
+		// 获取配置文件
+		Properties jdbcProperties = getProperties("jdbc.properties");
 		// 获取表名
 		String[] tableNames = getTableName(properties);
 		// 循环生成代码
@@ -108,12 +115,55 @@ public class GenerateCode {
 			generateXxxDetail(tableName, properties, context);
 		}
 		try {
+			//mybatis的xml 和entity以及mapper的Java文件自动生成
 			List<String> warnings = new ArrayList<String>();
 			boolean overwrite = true;
 			//TODO 
 			File configFile = new File(USER_DIR + FILE_SEPARATOR + "src" + FILE_SEPARATOR + "main" + FILE_SEPARATOR + "resources" + FILE_SEPARATOR +"generatorConfig"+ FILE_SEPARATOR + properties.getProperty("generatorConfig"));
 			ConfigurationParser cp = new ConfigurationParser(warnings);
 			Configuration config = cp.parseConfiguration(configFile);
+			//jdbc设置为jdbc.properties中的配置
+			String contextId = properties.getProperty("generatorContextId");
+			String idNeedReplaceJDBC  = properties.getProperty("idNeedReplaceJDBC");
+			if("true".equalsIgnoreCase(idNeedReplaceJDBC)){
+				JDBCConnectionConfiguration jdbcConnectionConfiguration = new JDBCConnectionConfiguration();
+				jdbcConnectionConfiguration.setConnectionURL(jdbcProperties.getProperty("connectionURL"));
+				jdbcConnectionConfiguration.setDriverClass(jdbcProperties.getProperty("driverClass"));
+				jdbcConnectionConfiguration.setPassword(jdbcProperties.getProperty("password"));
+				jdbcConnectionConfiguration.setUserId(jdbcProperties.getProperty("userId"));
+				config.getContext(contextId).setJdbcConnectionConfiguration(jdbcConnectionConfiguration);
+			}
+			String javaOutPutStr = properties.getProperty("javaDestination") + properties.getProperty("rootPackage") + properties.getProperty("module");
+			String targetPackageBase = properties.getProperty("targetPackage")  ;
+			File persistenceDir = new File( javaOutPutStr+ properties.getProperty("persistence"));
+			File entityDir = new File( javaOutPutStr+ properties.getProperty("entity"));
+			if (!persistenceDir.isDirectory()) {
+				persistenceDir.mkdirs();
+			}
+			if (!entityDir.isDirectory()) {
+				entityDir.mkdirs();
+			}
+			if ("true".equalsIgnoreCase(properties.getProperty("idNeedReplaceDir"))) {
+				//去除注释
+				Properties commentProperties = new Properties();
+				commentProperties.setProperty("suppressAllComments", "true");
+				config.getContext(contextId).getCommentGenerator().addConfigurationProperties(commentProperties);
+				//persistence 的xml
+				JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = config.getContext(contextId).getJavaClientGeneratorConfiguration();
+				javaClientGeneratorConfiguration.setTargetPackage(targetPackageBase + "."+properties.getProperty("module")+"."+"persistence");
+				javaClientGeneratorConfiguration.setConfigurationType("XMLMAPPER");
+				javaClientGeneratorConfiguration.setImplementationPackage(null);
+				javaClientGeneratorConfiguration.setTargetProject(properties.getProperty("javaDestination") );
+				//java mapper
+				SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = config.getContext(contextId).getSqlMapGeneratorConfiguration();
+				sqlMapGeneratorConfiguration.setTargetPackage(targetPackageBase + "."+properties.getProperty("module")+"."+"persistence");
+				sqlMapGeneratorConfiguration.setTargetProject(properties.getProperty("javaDestination") );
+				//java entity
+				JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = config.getContext(contextId).getJavaModelGeneratorConfiguration();
+				javaModelGeneratorConfiguration.setTargetPackage(targetPackageBase + "."+properties.getProperty("module")+ "."+"entity");
+				javaModelGeneratorConfiguration.setTargetProject(properties.getProperty("javaDestination") );
+			}
+			
 			DefaultShellCallback callback = new DefaultShellCallback(overwrite);
 			MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
 			myBatisGenerator.generate(null);
@@ -580,12 +630,10 @@ public class GenerateCode {
 	 * 
 	 * @return 配置文件
 	 */
-	private Properties getProperties() {
+	private Properties getProperties(String fileName) {
 		Properties properties = new Properties();
 		try {
-			//TODO 更换配置文件properties文件
-			InputStream inStream = GenerateCode.class.getClassLoader().getResourceAsStream("fuyou_config.properties");
-//			InputStream inStream = GenerateCode.class.getClassLoader().getResourceAsStream("config.properties");
+			InputStream inStream = GenerateCode.class.getClassLoader().getResourceAsStream(fileName);
 			properties.load(inStream);
 		} catch (IOException e) {
 			e.printStackTrace();

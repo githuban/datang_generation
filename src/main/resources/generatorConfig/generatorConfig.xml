@@ -1,11 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE generatorConfiguration    
+      PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"    
+      "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd"> 
 <generatorConfiguration>
 	<context id="dev" targetRuntime="MyBatis3">
-<!-- 		<commentGenerator>   -->
-		    <!-- 是否去除自动生成的注释 true：是 ： false:否 -->  
-<!-- 		    <property name="suppressAllComments" value="true" />   -->
-<!-- 	 	 </commentGenerator>   -->
+		<plugin type="com.cattsoft.generation.MyEqualsHashCodePlugin"></plugin>  
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>  
+          
+<!--  	<commentGenerator>  -->
+<!-- 		<property name="suppressAllComments" value="true" />   -->
+<!-- 	 </commentGenerator>     -->
 		<!-- 基于oracle的分页插件 -->
 		<plugin type="org.mybatis.generator.plugins.PagingByOraclePlugin"></plugin>
 		<!-- JDBC -->
@@ -20,21 +24,21 @@
 		     <property name="forceBigDecimals" value="false" />  
 		  </javaTypeResolver>  
 		<!-- Xxx.java -->
-		<javaModelGenerator targetPackage="com.cattsoft.zhongzhi.school.entity"
+		<javaModelGenerator targetPackage="com.cattsoft.cms.entity"
 			targetProject="D:\\Workspaces\\myEclipse10\\generation\\src\\main\\java">
 			<property name="rootClass"
 				value="com.cattsoft.baseplatform.core.entity.Entity" />
 		</javaModelGenerator>
 		<!-- XxxMapper.xml -->
-		<sqlMapGenerator targetPackage="com.cattsoft.zhongzhi.school.persistence"
+		<sqlMapGenerator targetPackage="com.cattsoft.cms.persistence"
 			targetProject="D:\\Workspaces\\myEclipse10\\generation\\src\\main\\resources" />
 		<!-- XxxMapper.java -->
-		<javaClientGenerator targetPackage="com.cattsoft.zhongzhi.school.persistence"
+		<javaClientGenerator targetPackage="com.cattsoft.cms.persistence"
 			targetProject="D:\\Workspaces\\myEclipse10\\generation\\src\\main\\java"
 			type="XMLMAPPER" />
     
 		<!-- 同时生成多张表的，配置多个table节点 -->
-		<table schema="coc_dev" tableName="FY_SALE_ORDER"
+		<table tableName="FY_SALE_ORDER"
 			enableCountByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" enableUpdateByExample="false">
 			<!-- sequence -->
