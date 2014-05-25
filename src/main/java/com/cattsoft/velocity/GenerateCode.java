@@ -113,6 +113,7 @@ public class GenerateCode {
 			generateXxxCreate(tableName, properties, context);
 			generateXxxUpdate(tableName, properties, context);
 			generateXxxDetail(tableName, properties, context);
+			generateStruts(tableName, properties, context);
 		}
 		try {
 			//mybatis的xml 和entity以及mapper的Java文件自动生成
@@ -185,6 +186,45 @@ public class GenerateCode {
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("==========生成结束==========");
+		}
+	}
+
+	/**
+	 * Description: 生成Struts.xml文件配置<br>
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @param properties
+	 *            配置文件
+	 * @param context
+	 *            上下文
+	 */
+	private void generateStruts(String tableName, Properties properties,VelocityContext context) {
+		try {
+			// 获取模板
+			Template template = Velocity.getTemplate("xxxStruts.vm");
+			//
+			File directory = new File(properties.getProperty("javaDestination") + properties.getProperty("rootPackage") + properties.getProperty("module") );
+			if (!directory.isDirectory()) {
+				directory.mkdirs();
+			}
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(directory, "struts-"+convertFirstLetterToLowerCase(tableName) + ".xml")));
+			// 合并
+			if (template != null) {
+				template.merge(context, writer);
+			}
+			writer.flush();
+			writer.close();
+		} catch (ResourceNotFoundException e) {
+			e.printStackTrace();
+		} catch (ParseErrorException e) {
+			e.printStackTrace();
+		} catch (MethodInvocationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 	}
 
@@ -320,7 +360,7 @@ public class GenerateCode {
 			// 获取模板
 			Template template = Velocity.getTemplate("XxxServiceImpl.vm");
 			//
-			File directory = new File(properties.getProperty("javaDestination") + properties.getProperty("rootPackage") + properties.getProperty("module") + properties.getProperty("service"));
+			File directory = new File(properties.getProperty("javaDestination") + properties.getProperty("rootPackage") + properties.getProperty("module") + properties.getProperty("service")+ properties.getProperty("impl"));
 			if (!directory.isDirectory()) {
 				directory.mkdirs();
 			}

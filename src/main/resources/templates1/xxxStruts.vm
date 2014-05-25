@@ -1,0 +1,36 @@
+package ${rootPackage}${module}.component;
+
+import java.util.List;
+
+import com.cattsoft.baseplatform.core.entity.PagingInfo;
+import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
+import com.cattsoft.baseplatform.core.entity.PagingResultBean;
+import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
+import ${rootPackage}${module}.persistence.${upperTableName}Mapper;
+
+public class ${upperTableName}Component {
+
+	private ${upperTableName}Mapper ${lowerTableName}Mapper;
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC  
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"  
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="${module}" namespace="/${module}" extends="default">
+		<action name="${lowerTableName}Action" class="${rootPackage}${module}.web.${upperTableName}Action">
+			<result name="main">/WEB-INF/pages/${module}/${lowerTableName}/${lowerTableName}Main.jsp</result>
+			<result name="showList">/WEB-INF/pages/${module}/${lowerTableName}/${lowerTableName}List.jsp</result>
+			<result name="view">/WEB-INF/pages/${module}/${lowerTableName}/${lowerTableName}Detail.jsp</result>
+			<result name="prepareCreate">/WEB-INF/pages/${module}/${lowerTableName}/${lowerTableName}Create.jsp</result>
+			<result name="prepareUpdate">/WEB-INF/pages/${module}/${lowerTableName}/${lowerTableName}Update.jsp</result>
+			<result type="json" name="list">
+				<param name="root">prb</param> 
+			</result>
+			<result type="json" name="default">
+				<param name="root">resultMsg</param> 
+			</result>
+		</action>
+	</package>
+</struts>
