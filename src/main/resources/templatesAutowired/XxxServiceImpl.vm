@@ -1,16 +1,22 @@
-package ${rootPackage}${module}.service;
+package ${rootPackage}${module}.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
 import com.cattsoft.baseplatform.core.entity.PagingResultBean;
 import ${rootPackage}${module}.component.${upperTableName}Component;
 import ${rootPackage}${module}.entity.${upperTableName};
+import ${rootPackage}${module}.service.${upperTableName}Service;
 import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
 
+@Service("${lowerTableName}Service")
+@Transactional
 public class ${upperTableName}ServiceImpl implements ${upperTableName}Service {
+	@Autowired
 	private ${upperTableName}Component ${lowerTableName}Component;
 
 	@Override
@@ -62,6 +68,7 @@ public class ${upperTableName}ServiceImpl implements ${upperTableName}Service {
 		return ${lowerTableName}Component.updateByPrimaryKey(${lowerTableName});
 	}
 #end
+
 	/*************************************************************/
 	/*                      setter and getter                    */
 	/*************************************************************/
@@ -69,4 +76,5 @@ public class ${upperTableName}ServiceImpl implements ${upperTableName}Service {
 	public void set${upperTableName}Component(${upperTableName}Component ${lowerTableName}Component) {
 		this.${lowerTableName}Component = ${lowerTableName}Component;
 	}
+
 }

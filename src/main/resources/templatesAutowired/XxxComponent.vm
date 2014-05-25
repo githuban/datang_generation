@@ -2,6 +2,9 @@ package ${rootPackage}${module}.component;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.cattsoft.baseplatform.core.entity.PagingInfo;
 import com.cattsoft.baseplatform.core.entity.PagingQueryBean;
 import com.cattsoft.baseplatform.core.entity.PagingResultBean;
@@ -9,8 +12,9 @@ import ${rootPackage}${module}.entity.${upperTableName};
 import ${rootPackage}${module}.entity.querybean.${upperTableName}QB;
 import ${rootPackage}${module}.persistence.${upperTableName}Mapper;
 
+@Component
 public class ${upperTableName}Component {
-
+	@Autowired
 	private ${upperTableName}Mapper ${lowerTableName}Mapper;
 
 	public PagingResultBean<List<${upperTableName}>> queryPageList(PagingQueryBean<${upperTableName}QB> pagingQueryBean) throws Exception {
